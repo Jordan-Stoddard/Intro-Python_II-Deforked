@@ -2,6 +2,7 @@ from room import Room
 
 # Declare all the rooms
 
+# This is a dictionary where the key is a the name of a room, and the value is the invocation of a Room class, with two strings passed in a parameters.
 room = {
     'outside':  Room("Outside Cave Entrance",
                      "North of you, the cave mount beckons"),
@@ -24,6 +25,8 @@ earlier adventurers. The only exit is to the south."""),
 
 # Link rooms together
 
+# room[''] <== This is bracket notation to access a key inside the room dictionary
+                #.n_to this is dot notation, to access an attribute or method on the Room class. 
 room['outside'].n_to = room['foyer']
 room['foyer'].s_to = room['outside']
 room['foyer'].n_to = room['overlook']
