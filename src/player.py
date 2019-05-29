@@ -2,8 +2,9 @@
 # currently.
 
 class Player:
-    def __init__(self, current_room):
+    def __init__(self, current_room, name):
         self.current_room = current_room
+        self.name = name
 
     def __str__(self):
-        return f"{self.current_room}"
+        return f"Player name: {self.name}, Current room: {self.current_room}"
