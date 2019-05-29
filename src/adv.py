@@ -1,26 +1,27 @@
 from room import Room
 from player import Player
+from helper_functions import handle_direction
 
 # Declare all the rooms
 
 # This is a dictionary where the key is a the name of a room, and the value is the invocation of a Room class, with two strings passed in a parameters.
 room = {
     'outside':  Room("Outside Cave Entrance",
-                     "North of you, the cave mount beckons", ""),
+                     "North of you, the cave mount beckons", ["pebble", "stick", "dougnut"]),
 
     'foyer':    Room("Foyer", """Dim light filters in from the south. Dusty
 passages run north and east.""", ""),
 
     'overlook': Room("Grand Overlook", """A steep cliff appears before you, falling
 into the darkness. Ahead to the north, a light flickers in
-the distance, but there is no way across the chasm.""", ""),
+the distance, but there is no way across the chasm.""", []),
 
     'narrow':   Room("Narrow Passage", """The narrow passage bends here from west
-to north. The smell of gold permeates the air.""", ""),
+to north. The smell of gold permeates the air.""", []),
 
     'treasure': Room("Treasure Chamber", """You've found the long-lost treasure
 chamber! Sadly, it has already been completely emptied by
-earlier adventurers. The only exit is to the south.""", ""),
+earlier adventurers. The only exit is to the south.""", []),
 }
 
 
@@ -42,45 +43,54 @@ room['treasure'].s_to = room['narrow']
 #
 
 # Make a new player object that is currently in the 'outside' room.
-player = Player(room['outside'], 'Bart')
+player = Player(room['outside'], 'Bart', [])
 
-
-"""
-handle_direction takes in the string entered by user and the current room instance from the player,
-creates an attribute variable that concatenates the input string + '_to'
-uses hasattr function to check if the current_room Room instance has the attribute we just defined
-then if it does return the getattr function to get the value of that attribute from that Room instance
-"""
-def handle_direction(input, current_room):
-    attribute = input + '_to'
-    if hasattr(current_room, attribute):
-        return getattr(current_room, attribute)
+def handle_action(input, current_room, player):
+    if input[0] == 'get' or input[0] == 'take':
+        match = [i for i in current_room.item_list if input[1] in current_room.item_list]
+        try:
+            return match[0]
+        except IndexError:
+            print(f"\n**Sorry, but that item doesn't exist in this room. Try something else.**\n")
     else:
-# Print an error message if the movement isn't allowed.
-        print("You can't go that way! \n Either the map doesn't go that direction or you typed an invalid direction key. \n Direction keys are: n, s, e, w \n")
-        return current_room
+        print("""
+        ** Invalid two word command.**
+        Two word command list: get [item], take [item]\n""")
+
 
 # Write a loop that:
 #
 while True:
-# * Prints the current room name
+# * Prints the current room name, description, and items in the room.
     print(player.current_room.name)
-# * Prints the current description (the textwrap module might be useful here).
     print(player.current_room.description)
-    print(f"Items in this room: {player.current_room.item_list}")
+    print(f"Items in this area: {', '.join(player.current_room.item_list)}")
 
 # * Waits for user input and decides what to do
     string = input('\nEnter a command: ').lower().split()
+
+# Check if command is 1 word.
     if len(string) == 1:
 # If the user enters "q", quit the game.
         if string[0] == 'q':
-            print("We'll see you next time, adventurer.")
+            print("\nWe'll see you next time, adventurer.")
             break
-# If the user enters a cardinal direction, attempt to move to the room there.
+# If user enters valid direction: n, s, e, w then run handle_direction
         player.current_room = handle_direction(string[0], player.current_room)
+        
+# Check if command is 2 words.
     elif len(string) == 2:
-        print('You entered a two word command')
+        handle_action(string, player.current_room)
     else:
-        print('Invalid number of commands given. Please either give a direction(n, s, e, w), or a two word command.')
+        print('\n**Invalid number of commands given.** \n Please either give a direction(n, s, e, w), or a two word command.\n')
+
+"""
+If we have a two word command,
+check if the first word in the two word command is get or take
+if it is, check the second word,
+if it isn't send error
+
+if second word is == to an item in the item_list of the room then take the item from the room's item_list and place it in the players inventory.
+"""
 
 
