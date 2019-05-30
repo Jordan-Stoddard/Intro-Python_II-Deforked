@@ -8,4 +8,6 @@ class Room:
         self.item_list = item_list
 
     def __str__(self):
-        return f"Room name:{self.name},\nRoom description:{self.description}\nItems in this room: {self.item_list}"
+        item_list = self.item_list
+        item_list = [i.name  for i in item_list]
+        return f"\n-----------------\n{self.name}\n{self.description}\nItems in this room: {', '.join(item_list)}"
