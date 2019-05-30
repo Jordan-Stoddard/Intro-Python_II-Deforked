@@ -38,6 +38,3 @@ while True:
     else: 
         print("you lose")
         losses += 1
-        
-
-
